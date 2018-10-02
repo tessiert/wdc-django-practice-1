@@ -21,13 +21,6 @@ def current_date(request):
     return response
 
 
-def _zero_pad(in_string):
-    if len(in_string) == 1:
-        return '0' + in_string
-    else:
-        return in_string
-
-
 # Use URL with format /my-age/<year>/<month>/<day>
 def my_age(request, year, month, day):
     """
@@ -36,7 +29,7 @@ def my_age(request, year, month, day):
 
         e.g.: /my-age/1992/1/20 returns 'Your age is 26 years old'
     """
-    birth_date = datetime.strptime(str(year) + _zero_pad(str(month)) + _zero_pad(str(day)), '%Y%m%d')
+    birth_date = datetime.strptime(str(year) + str(month) + str(day), '%Y%m%d')
     elapsed_days = (datetime.now() - birth_date).days 
     age_in_years = str(elapsed_days // 365)  # Use floor division to find age in years
     age_string = 'Your age is {age} years old'.format(age=age_in_years)
@@ -54,13 +47,18 @@ def next_birthday(request, birthday):
     current_year = str(datetime.now().year)
     next_birthday = datetime.strptime(current_year + birth_month_and_day, '%Y%m-%d')
 
-    days_remaining = (next_birthday - datetime.now()).days
+    days_remaining = (next_birthday - datetime.now()).days + 1 
 
-    if days_remaining < 0:
+    if days_remaining <= 0:
         days_remaining += 365
 
     return HttpResponse('Days until next birthday: {}'.format(days_remaining))
 
+
+PROFILE_INFO = {
+    'my_name': 'Guido van Rossum',
+    'my_age': 62
+}
 
 # Use /profile URL
 def profile(request):
@@ -68,7 +66,7 @@ def profile(request):
         This view should render the template 'profile.html'. Make sure you return
         the correct context to make it work.
     """
-    pass
+    return render(request, 'profile.html', context=PROFILE_INFO)
 
 
 
