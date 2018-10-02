@@ -102,8 +102,8 @@ AUTHORS_INFO = {
 
 # Use provided URLs, don't change them
 def authors(request):
-    pass
+    return render(request, 'authors.html', context=AUTHORS_INFO)
 
 
 def author(request, authors_last_name):
-    pass
+    return render(request, 'author.html', context=AUTHORS_INFO[authors_last_name])
